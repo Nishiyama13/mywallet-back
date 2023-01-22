@@ -3,13 +3,13 @@ import dotenv from "dotenv";
 
 dotenv.config()
 
-const MongoClient = new MongoClient(process.env.DATABASE_URL)
+const mongoClient = new MongoClient(process.env.DATABASE_URL)
 let db;
 
 try{
-    await MongoClient.connect()
+    await mongoClient.connect()
     console.log("Conectado ao Mongodb")
-    db = MongoClient.db()
+    db = mongoClient.db()
 }catch(error){
     console.log("Ocorreu um erro no server")
 }
