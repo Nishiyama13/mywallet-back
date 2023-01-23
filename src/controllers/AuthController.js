@@ -48,7 +48,7 @@ export async function signIn(req,res){
         await db.collection("sessions").insertOne({ idUser: checkUser._id, token })
        // await db.collection("sessions").insertOne( {idUser: checkUser._id, token,expiresIn})
 
-        return res.status(200).send(token)
+        return res.status(200).send({token:token, name:checkUser.name})
     } catch(error){
         res.status(500).send(error.message);
     }
