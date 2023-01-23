@@ -29,23 +29,23 @@ export async function signIn(req,res){
         const checkUser = await db.collection("users").findOne({ email });
         if(!checkUser) return res.status(400).send("Usuário ou senha incorretos.");
 
-
         //check if the password is correct
         const isCorrectPassword = bcrypt.compareSync(password, checkUser.password);
         if (!isCorrectPassword) return res.status(400).send("Usuário ou senha incorretos.");
-
-        //check if the user alredy has an active session
-/*         const checkSession = await db.collection("sessions").findOne({idUser: checkUser._id});
-        if(checkSession) return res.status(400).send("Sessão já existe, desconecte de seu outro dispositivo para se conectar") */
-
+        
         //generate token
         const token = uuidV4();
 
-        //expiring time for token
-        const expiresIn = 3600; //1 hour
+        //check if the user alredy has an active session
+        const checkSession = await db.collection("sessions").findOne({idUser: checkUser._id, token});
 
+        if(checkSession) return res.status(400).send("Sessão já existe, desconecte de seu outro dispositivo para se conectar") 
+
+       /*  //expiring time for token
+        const expiresIn = 3600; //1 hour
+ */
         //insert token on session collection
-        await db.collection("sessions").insertOne( {idUser: checkUser._id, token})
+        await db.collection("sessions").insertOne({ idUser: checkUser._id, token })
        // await db.collection("sessions").insertOne( {idUser: checkUser._id, token,expiresIn})
 
         return res.status(200).send(token)
@@ -53,3 +53,4 @@ export async function signIn(req,res){
         res.status(500).send(error.message);
     }
 }
+
