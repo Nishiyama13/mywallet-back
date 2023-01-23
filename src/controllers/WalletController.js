@@ -2,13 +2,16 @@ import db from "../config/database.js";
 import dayjs from "dayjs"
 
 export async function listWallet(req,res){
+    const checkSession = res.locals.session;
+    console.log(checkSession);
+
     try{
-        const checkSession = res.locals.session;
-        const transactions = await db.collection("wallets").find({_id: checkSession._id}).toArray();
-        let balance = 0;
+        
+        const transactions = await db.collection("wallet").find({idUser: checkSession.idUser}).toArray();
+        //let balance = 0;
 
         console.log(transactions);
-    
+        res.status(200).send(transactions)
 
     }catch(error){
         res.status(500).send(error.message);
